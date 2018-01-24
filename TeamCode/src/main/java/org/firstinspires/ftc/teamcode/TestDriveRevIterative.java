@@ -34,7 +34,10 @@ import android.hardware.Camera;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /* *
  * Test Drive REV
@@ -57,6 +60,11 @@ public class TestDriveRevIterative extends OpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
 
+    private DcMotor clawHeight = null;
+
+    private Servo leftClawServo = null;
+    private Servo rightClawServo = null;
+
     //Custom variables to enable speed control and torch control
     private float speedMultiplier = 1.0f;
     private Camera camera;
@@ -75,10 +83,24 @@ public class TestDriveRevIterative extends OpMode {
         leftDrive = hardwareMap.get(DcMotor.class, "leftDrive");
         rightDrive = hardwareMap.get(DcMotor.class, "rightDrive");
 
+        clawHeight = hardwareMap.get(DcMotor.class, "clawMotor");
+
+        leftClawServo  = hardwareMap.get(Servo.class, "leftClaw");
+        rightClawServo = hardwareMap.get(Servo.class, "rightClaw");
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        leftClawServo.setDirection(Servo.Direction.FORWARD);
+        rightClawServo.setDirection(Servo.Direction.REVERSE);
+
+        //Set encoder mode
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        telemetry.addData("Ready", "Init finished");
     }
 
     /*
@@ -94,12 +116,19 @@ public class TestDriveRevIterative extends OpMode {
      */
     @Override
     public void start() {
-        //Turn on the torch when the robot is ready
-        camera = Camera.open();
-        p = camera.getParameters();
-        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        camera.setParameters(p);
-        camera.startPreview();
+        //On the ZTE phones, this will occasionally throw an error
+        //Use a try/catch statement so that the whole program doesn't crash
+        //if the camera won't work
+        try {
+            //Turn on the torch when the robot is ready
+            camera = Camera.open();
+            p = camera.getParameters();
+            p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+            camera.setParameters(p);
+            camera.startPreview();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
 
         runtime.reset();
     }
@@ -109,6 +138,11 @@ public class TestDriveRevIterative extends OpMode {
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
+
+        // Setup a variable for the height of the claw to save for telemetry
+        double clawPower = gamepad1.left_trigger - gamepad1.right_trigger;
+
+        clawHeight.setPower(clawPower / 2);
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -128,11 +162,27 @@ public class TestDriveRevIterative extends OpMode {
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
 
-        // Show the elapsed game time and wheel power.
+        // Set claw position based on which buttons are pressed on the gamepad
+        if(gamepad1.a) {
+            setClaw(1.0);
+        } else if(gamepad1.b) {
+            setClaw((double)0);
+        } else if(gamepad1.y) {
+            setClaw(0.75);
+        }
+
+        double leftPosition = leftClawServo.getPosition();
+        double rightPosition = rightClawServo.getPosition();
+
+        // Show the elapsed game time and wheel power
+        // Also show the speed multiplier and servo positions
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)",
+        telemetry.addData("Motors", "Left (%.2f), Right (%.2f)",
                 leftPower, rightPower);
         telemetry.addData("Speed", Float.toString(speedMultiplier));
+        telemetry.addData("Claw Pwr", "(%.2f)", clawPower);
+        telemetry.addData("Servos", "Left (%.2f), Right (%.2f)",
+                leftPosition, rightPosition);
         telemetry.update();
     }
 
@@ -141,11 +191,24 @@ public class TestDriveRevIterative extends OpMode {
      */
     @Override
     public void stop() {
-        //Turn off the torch when the robot is done
-        camera = Camera.open();
-        p = camera.getParameters();
-        p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-        camera.setParameters(p);
-        camera.stopPreview();
+        //On the ZTE phones, this will occasionally throw an error
+        //Use a try/catch statement so that the whole program doesn't crash
+        //if the camera won't work
+        try {
+            //Turn off the torch when the robot is done
+            camera = Camera.open();
+            p = camera.getParameters();
+            p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            camera.setParameters(p);
+            camera.stopPreview();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Helper function so that opening and closing the claw is easier
+    void setClaw(Double position) {
+        leftClawServo.setPosition(position);
+        rightClawServo.setPosition(position);
     }
 }
