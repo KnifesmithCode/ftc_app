@@ -37,8 +37,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 /* *
  * Test Drive REV
  * Used for testing our robots
@@ -207,7 +205,7 @@ public class TestDriveRevIterative extends OpMode {
     }
 
     // Helper function so that opening and closing the claw is easier
-    void setClaw(Double position) {
+    private void setClaw(Double position) {
         leftClawServo.setPosition(position);
         rightClawServo.setPosition(position);
     }
