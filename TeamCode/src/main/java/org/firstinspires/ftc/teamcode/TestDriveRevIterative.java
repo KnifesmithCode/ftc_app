@@ -152,10 +152,10 @@ public class TestDriveRevIterative extends OpMode {
         leftPower = gamepad1.left_stick_y * speedMultiplier;
         rightPower = gamepad1.right_stick_y * speedMultiplier;
 
-        if (gamepad1.dpad_up && speedMultiplier + 0.0001 <= 1) {
-            speedMultiplier += 0.0001;
-        } else if (gamepad1.dpad_down && speedMultiplier - 0.0001 >= 0) {
-            speedMultiplier -= 0.0001;
+        if (gamepad1.dpad_up && speedMultiplier + 0.0005 <= 1) {
+            speedMultiplier += 0.0005;
+        } else if (gamepad1.dpad_down && speedMultiplier - 0.0005 >= 0) {
+            speedMultiplier -= 0.0005;
         }
 
         // Send calculated power to wheels
