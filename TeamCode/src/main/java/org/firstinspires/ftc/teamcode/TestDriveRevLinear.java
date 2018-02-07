@@ -55,7 +55,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Disabled
 
 @SuppressWarnings("unused")
-public class TestDriveRev extends LinearOpMode {
+public class TestDriveRevLinear extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

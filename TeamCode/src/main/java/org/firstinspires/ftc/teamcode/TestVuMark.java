@@ -29,7 +29,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
@@ -41,7 +40,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
@@ -68,18 +66,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name="Concept: VuMark Id", group ="Concept")
 //@Disabled
-public class TesVuMark extends LinearOpMode {
+public class TestVuMark extends LinearOpMode {
 
-    public static final String TAG = "Vuforia VuMark Sample";
-    public static final String VUFORIA_LICENSE_KEY = "Ab5ccrz/////AAAAGRPjInbnD0ysn2+W6V/5fvWEWfMBfnMmzh3IWHHThK2Q7zbFgxWksAYuOPNoYGnao27C07vZUQqU97UqdJWDxW/hUt/mH9/5VPP14l6AAK1FV8Hk8TSKECoOC6whi+MAV8UVi6268V6te0d25nvVc1Gxxd92FmjRXxr89FimM+ogyZ5q89etW8LlA745oUSzKB5R7GgrSLln7MLcqrur5fVblEKtc+gxUzMlyPn3n8jaG7kn5zQLgw+tmIv+KNbH+JZAsMPJh/kAaIg19Sj2yxgNHo60UJVdu6JXHSn9GQ6CCRqX+h9OWFRXJIAAYUSR+3eC2NfOdAET6nJN28h/P+v7EYlArtL1TQxXoP3hEVVx";
+    private static final String TAG = "Vuforia VuMark Sample";
+    private static final String VUFORIA_LICENSE_KEY = "Ab5ccrz/////AAAAGRPjInbnD0ysn2+W6V/5fvWEWfMBfnMmzh3IWHHThK2Q7zbFgxWksAYuOPNoYGnao27C07vZUQqU97UqdJWDxW/hUt/mH9/5VPP14l6AAK1FV8Hk8TSKECoOC6whi+MAV8UVi6268V6te0d25nvVc1Gxxd92FmjRXxr89FimM+ogyZ5q89etW8LlA745oUSzKB5R7GgrSLln7MLcqrur5fVblEKtc+gxUzMlyPn3n8jaG7kn5zQLgw+tmIv+KNbH+JZAsMPJh/kAaIg19Sj2yxgNHo60UJVdu6JXHSn9GQ6CCRqX+h9OWFRXJIAAYUSR+3eC2NfOdAET6nJN28h/P+v7EYlArtL1TQxXoP3hEVVx";
 
     OpenGLMatrix lastLocation = null;
 
     /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * Vuforia is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
-    VuforiaLocalizer vuforia;
+    private VuforiaLocalizer vuforia;
 
     @Override public void runOpMode() {
 
@@ -115,11 +113,11 @@ public class TesVuMark extends LinearOpMode {
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        /**
-         * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
-         * in this data set: all three of the VuMarks in the game were created from this one template,
-         * but differ in their instance id information.
-         * @see VuMarkInstanceId
+        /*
+          Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
+          in this data set: all three of the VuMarks in the game were created from this one template,
+          but differ in their instance id information.
+          @see VuMarkInstanceId
          */
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
@@ -133,11 +131,11 @@ public class TesVuMark extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            /**
-             * See if any of the instances of {@link relicTemplate} are currently visible.
-             * {@link RelicRecoveryVuMark} is an enum which can have the following values:
-             * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
-             * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
+            /*
+              See if any of the instances of {@link relicTemplate} are currently visible.
+              {@link RelicRecoveryVuMark} is an enum which can have the following values:
+              UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
+              UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
@@ -178,7 +176,7 @@ public class TesVuMark extends LinearOpMode {
         }
     }
 
-    String format(OpenGLMatrix transformationMatrix) {
+    private String format(OpenGLMatrix transformationMatrix) {
         return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }
 }

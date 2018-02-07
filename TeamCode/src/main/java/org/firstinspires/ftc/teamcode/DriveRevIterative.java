@@ -44,14 +44,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * It also turns on the torch (flashlight) on the robot controller phone so it is obvious when the robot is running
 */
 
-@TeleOp(name = "Test Drive REV", group = "Manual")
+@TeleOp(name = "Drive REV", group = "Manual")
 //@Disabled
 
 @SuppressWarnings("unused")
-public class TestDriveRevIterative extends OpMode {
+public class DriveRevIterative extends OpMode {
 
     //#region Global Variables
     // Declare Global variables
+
+    //Use a global variable for torch control so that it's easy to toggle
+    private boolean ACTIVATE_TORCH = false;
 
     //Default OpMode variables
     private ElapsedTime runtime = new ElapsedTime();
@@ -114,18 +117,21 @@ public class TestDriveRevIterative extends OpMode {
      */
     @Override
     public void start() {
-        //On the ZTE phones, this will occasionally throw an error
-        //Use a try/catch statement so that the whole program doesn't crash
-        //if the camera won't work
-        try {
-            //Turn on the torch when the robot is ready
-            camera = Camera.open();
-            p = camera.getParameters();
-            p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            camera.setParameters(p);
-            camera.startPreview();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+        //Use a global variable for torch control so that it's easy to toggle
+        if(ACTIVATE_TORCH) {
+            //On the ZTE phones, this will occasionally throw an error
+            //Use a try/catch statement so that the whole program doesn't crash
+            //if the torch won't work
+            try {
+                //Turn on the torch when the robot is ready
+                camera = Camera.open();
+                p = camera.getParameters();
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                camera.setParameters(p);
+                camera.startPreview();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
         }
 
         runtime.reset();
@@ -141,9 +147,6 @@ public class TestDriveRevIterative extends OpMode {
         double clawPower = gamepad1.left_trigger - gamepad1.right_trigger;
 
         clawHeight.setPower(clawPower / 2);
-
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -189,18 +192,21 @@ public class TestDriveRevIterative extends OpMode {
      */
     @Override
     public void stop() {
-        //On the ZTE phones, this will occasionally throw an error
-        //Use a try/catch statement so that the whole program doesn't crash
-        //if the camera won't work
-        try {
-            //Turn off the torch when the robot is done
-            camera = Camera.open();
-            p = camera.getParameters();
-            p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-            camera.setParameters(p);
-            camera.stopPreview();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+        //Use a global variable for torch control so that it's easy to toggle
+        if(ACTIVATE_TORCH) {
+            //On the ZTE phones, this will occasionally throw an error
+            //Use a try/catch statement so that the whole program doesn't crash
+            //if the torch won't work
+            try {
+                //Turn off the torch when the robot is done
+                camera = Camera.open();
+                p = camera.getParameters();
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                camera.setParameters(p);
+                camera.stopPreview();
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
         }
     }
 
