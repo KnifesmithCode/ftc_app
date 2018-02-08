@@ -38,10 +38,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /* *
- * Test Drive REV
+ * Drive REV 2P
  * Used for testing our robots
- * This program is a basic iterative OpMode which uses tank steering
+ * This program started as a basic iterative OpMode which uses tank steering
+ * It also controls the grabber on our robot
+ * This is the program for two-person control
  * It also turns on the torch (flashlight) on the robot controller phone so it is obvious when the robot is running
+ * (but only if the option is enabled in code)
 */
 
 @TeleOp(name = "Drive REV 2P", group = "Manual")
@@ -51,7 +54,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class DriveRevIterative2P extends OpMode {
 
     //#region Global Variables
-    // Declare Global variables
 
     //Use a global variable for torch control so that it's easy to toggle
     private boolean ACTIVATE_TORCH = false;
@@ -100,6 +102,10 @@ public class DriveRevIterative2P extends OpMode {
         //Set encoder mode
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //Set zero power mode to brake
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         telemetry.addData("Ready", "Init finished");
     }
